@@ -1,7 +1,3 @@
-name: Build-Test-Deploy
-
-on:
-  workflow_dispatch:
   push:
     branches: 
       - master
@@ -14,75 +10,13 @@ jobs:
     name: Making builds
     steps:
       - uses: actions/checkout@v1
-      - name: Install surge
-        uses: actions/setup-node@v1
+      - name: Make build
+        uses: jzweifel/gatsby-cli-github-action@master
         with:
-          node-version: 14
-      - run: npm install -g surge
-      
- Test-job1:
-    runs-on: ubuntu-latest
-    needs: Build-job
-    if: github.ref != 'refs/heads/production' 
-    name: Test1
-    steps:
-      - uses: actions/checkout@v1
-      - name: Test1
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - run: npm install --global mocha
-      - run: npm test 
- Test-job2:
-    runs-on: ubuntu-latest
-    needs: Build-job 
-    if: github.ref != 'refs/heads/production' 
-    name: Test2
-    steps:
-      - uses: actions/checkout@v1
-      - name: Test2
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - run: npm install mocha chai --save-dev
-      - run: npm test
- Test-job3:
-    runs-on: ubuntu-latest
-    needs: Build-job 
-    if: github.ref != 'refs/heads/production' 
-    name: Test3
-    steps:
-      - uses: actions/checkout@v1
-      - name: Test3
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - run: npm install --global mocha
-      - run: npm install unit.js
-      - run: npm test 
- 
- Deploy-job:
-    runs-on: ubuntu-latest
-    needs: [Test-job1,Test-job2,Test-job3]
-    name: Deployment
-    steps:
-      - uses: actions/checkout@v1
-      - name: Surge deployment
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14
-      - run: npm install -g surge
-      - run: surge ./ ${{secrets.SURGE_DOMAIN }} --token ${{ secrets.SURGE_TOKEN }}
+            gatsby-arg: build
 
- Postdeploy-Testing:
-    runs-on: ubuntu-latest
-    needs: Deploy-job
-    name: Curl-Testing
-    steps:
-      - uses: actions/checkout@v1
-      - name: Curl-testing
-        uses: actions/setup-node@v1
+      - name: Uploading artifacts
+        uses: actions/upload-artifact@v2
         with:
-          node-version: 14
-      - run:  sudo apt install curl
-      - run: curl -Is ${{secrets.SURGE_DOMAIN }}| head -n 1
+          name: build
+          path: artifact/index.html
