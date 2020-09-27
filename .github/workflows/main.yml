@@ -79,10 +79,10 @@ jobs:
       id: transition
       uses: atlassian/gajira-transition@master
       with:
-        issue: DFGA-3
+        issue: P1-3
         transition: "Done"
     - name: Comment on issue
       uses: atlassian/gajira-comment@master
       with:
-       issue: P1-2
+       issue: P1-3
        comment: Pipeline Success
