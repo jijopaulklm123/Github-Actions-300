@@ -51,7 +51,7 @@ jobs:
       id: create
       uses: atlassian/gajira-create@master
       with:
-        project: DFGA
+        project: P1
         issuetype: Task
         summary: |
               Testing will start for ${{ github.repository }}:
