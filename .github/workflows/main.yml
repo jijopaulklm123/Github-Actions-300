@@ -15,7 +15,6 @@ jobs:
  
  Jira-issue-create:
     name: Transition Issue Create
-    needs: Build-job
     runs-on: ubuntu-latest
     steps:
     - name: Login
